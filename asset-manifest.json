@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/bidsb2c/static/css/main.772aaf2d.css",
+    "main.js": "/bidsb2c/static/js/main.48d43221.js",
+    "static/js/787.8cdc7160.chunk.js": "/bidsb2c/static/js/787.8cdc7160.chunk.js",
+    "static/media/logo.png": "/bidsb2c/static/media/logo.603e5959b6541b3a2929.png",
+    "index.html": "/bidsb2c/index.html",
+    "main.772aaf2d.css.map": "/bidsb2c/static/css/main.772aaf2d.css.map",
+    "main.48d43221.js.map": "/bidsb2c/static/js/main.48d43221.js.map",
+    "787.8cdc7160.chunk.js.map": "/bidsb2c/static/js/787.8cdc7160.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.772aaf2d.css",
+    "static/js/main.48d43221.js"
+  ]
+}
