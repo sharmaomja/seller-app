@@ -15,14 +15,14 @@ import EditProduct from './pages/EditProductPage';
 import OrderList from './pages/OrderList';
 import ReturnRequests from './pages/ReturnRequests';
 import ShipmentTracking from './pages/ShipmentTracking';
-import Main from './components/Add products/Main';
+// import Main from './components/Add products/Main';
 
 function App() {
   return (
     <AuthProvider>
       <Router>
         <Routes>
-          <Route path="/" exact element={<Home />} />
+          <Route path="/seller-app" exact element={<Home />} />
           <Route path="/seller-register" element={<SellerRegistration />} />
           <Route path="/seller-login" element={<SellerLogin />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -35,7 +35,7 @@ function App() {
           <Route path="/returns" element={<ReturnRequests />} />
           <Route path="/update-status" element={<ShipmentTracking />} />
           <Route path="/edit-product/:productId" element={<EditProduct />} />
-          <Route path="/product" element={<Main />} />
+          {/*<Route path="/product" element={<Main />} />*/}
           {/* Additional routes */}
         </Routes>
       </Router>

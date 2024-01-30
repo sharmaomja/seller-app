@@ -5,14 +5,18 @@ import { Dropdown } from 'react-bootstrap';
 
 const Navbar = () => {
   const dropdownStyle = {
-    background: 'linear-gradient(to right, #0C296B, #6495ed)', // Gradient color for the button
+    background: 'linear-gradient(to right, #FFFF00, #FFD700)', // Gradient color for the button (yellow to gold)
+    padding: '10px',
+    width: '160px', 
+    color: '#000'
   };
-
+  
   const dropdownItemStyle = {
-    background: '#e8f4ff', // Blue background for the dropdown item list
-    color: '#fff', // Text color for dropdown items
+    background: 'linear-gradient(to right, #FFFF00, #FFD700)', // Gradient color for the dropdown item list (yellow to gold)
+    marginTop: '20px',
+    color: '#fff', 
   };
-
+  
   const { isLoggedIn, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -30,9 +34,9 @@ const Navbar = () => {
   if (!isLoggedIn) return null;
 
   return (
-      <nav className="bg-blue-900 p-1">
+      <nav className="bg-yellow-500 p-2">
         <div className="max-w-8xl flex items-center justify-between">
-          <Link to="/" className="ml-8 text-white text-2xl font-bold">
+          <Link to="/dashboard" className="ml-8 text-white text-2xl font-bold">
             BidsB2C Seller
           </Link>
   
@@ -44,10 +48,9 @@ const Navbar = () => {
   
               <Dropdown.Menu style={dropdownItemStyle}>
                 <Dropdown.Item as={Link} to="/dashboard">Dashboard</Dropdown.Item>
-                <Dropdown.Item as={Link} to="/product">Add</Dropdown.Item>
+                <Dropdown.Item as={Link} to="/profile">Account</Dropdown.Item>
                 <Dropdown.Item as={Link} to="/add-product">Add Products</Dropdown.Item>
                 <Dropdown.Item as={Link} to="/list-product">Your Products</Dropdown.Item>
-                <Dropdown.Item as={Link} to="/profile">Your Profile</Dropdown.Item>
                 <Dropdown.Item as={Link} to="/orders">View Orders</Dropdown.Item>
                 <Dropdown.Item as={Link} to="/returns">Returns</Dropdown.Item>
                 <Dropdown.Item as={Link} to="/update-status">Update Status</Dropdown.Item>
