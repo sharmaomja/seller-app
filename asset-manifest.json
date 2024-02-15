@@ -1,16 +1,14 @@
 {
   "files": {
-    "main.css": "/seller-app/static/css/main.096da977.css",
-    "main.js": "/seller-app/static/js/main.045e71d2.js",
-    "static/js/787.8cdc7160.chunk.js": "/seller-app/static/js/787.8cdc7160.chunk.js",
-    "static/media/logo2.png": "/seller-app/static/media/logo2.67797bfc4476dfe1aa1a.png",
+    "main.css": "/seller-app/static/css/main.8419ae63.css",
+    "main.js": "/seller-app/static/js/main.bde054ba.js",
+    "static/media/logo2.png": "/seller-app/static/media/logo2.a9c6fb85a9efffcc6de6.png",
     "index.html": "/seller-app/index.html",
-    "main.096da977.css.map": "/seller-app/static/css/main.096da977.css.map",
-    "main.045e71d2.js.map": "/seller-app/static/js/main.045e71d2.js.map",
-    "787.8cdc7160.chunk.js.map": "/seller-app/static/js/787.8cdc7160.chunk.js.map"
+    "main.8419ae63.css.map": "/seller-app/static/css/main.8419ae63.css.map",
+    "main.bde054ba.js.map": "/seller-app/static/js/main.bde054ba.js.map"
   },
   "entrypoints": [
-    "static/css/main.096da977.css",
-    "static/js/main.045e71d2.js"
+    "static/css/main.8419ae63.css",
+    "static/js/main.bde054ba.js"
   ]
 }
