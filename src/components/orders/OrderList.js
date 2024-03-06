@@ -56,7 +56,8 @@ const OrderList = ({ sellerId, storeId }) => {
   }, [user.userId, sellerId]);
 
   const formatAddress = (address) => {
-    const addressLines = address.split("\\n");
+    const cleanedAddress = address.replace(/"/g, "");
+    const addressLines = cleanedAddress.split("\\n");
     return addressLines.join(', ');
   };
 
