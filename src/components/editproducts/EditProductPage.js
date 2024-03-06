@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import ProductForm from '../components/ProductForm';
-import '../styles/EditProduct.css';
+import ProductForm from './ProductForm';
+import './EditProduct.css';
 
 const EditProduct = () => {
   const [product, setProduct] = useState(null);
@@ -18,11 +18,21 @@ const EditProduct = () => {
       .catch(error => console.error('Error fetching product:', error));
   }, [productId]);
 
-  const handleSave = (updatedProduct) => {
-    console.log("Updated Product", updatedProduct)
-    axios.put(`http://localhost:8000/api/products/${productId}/complete-details`, updatedProduct)
-      .then(() => console.log('Product updated successfully'))
-      .catch(error => console.error('Error updating product:', error));
+  const handleSave  = async (formData) => {
+
+    console.log(formData);
+    try {
+      await axios.put(`http://localhost:8000/api/products/${productId}/complete-details`, formData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      console.log('Product updated successfully');
+      // Additional success handling here
+    } catch (error) {
+      console.error('Error updating product:', error);
+      // Additional error handling here
+    }
   };
 
   if (!product) return <div>Loading...</div>;

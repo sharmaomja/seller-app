@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Navbar from '../components/Navbar';
+import Navbar from '../home/components/Navbar';
 
 const ReturnRequests = ({ productId }) => {
   const [returnRequests, setReturnRequests] = useState([]);

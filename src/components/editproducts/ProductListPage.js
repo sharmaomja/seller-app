@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext'; 
+import { AuthContext } from '../../context/AuthContext'; 
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);

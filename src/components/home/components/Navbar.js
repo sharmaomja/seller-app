@@ -1,18 +1,19 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from '../../../context/AuthContext';
 import { Dropdown } from 'react-bootstrap'; 
+import logo from '../../../assets/logo2.png'
 
 const Navbar = () => {
   const dropdownStyle = {
-    background: 'linear-gradient(to right, #FFFF00, #FFD700)', // Gradient color for the button (yellow to gold)
+    background: 'linear-gradient(to right, #FFFF00, #FFD700)', 
     padding: '10px',
     width: '160px', 
     color: '#000'
   };
   
   const dropdownItemStyle = {
-    background: 'linear-gradient(to right, #FFFF00, #FFD700)', // Gradient color for the dropdown item list (yellow to gold)
+    background: 'linear-gradient(to right, #FFFF00, #FFD700)', 
     marginTop: '20px',
     color: '#fff', 
   };
@@ -34,12 +35,11 @@ const Navbar = () => {
   if (!isLoggedIn) return null;
 
   return (
-      <nav className="bg-yellow-500 p-2">
+      <nav className="bg-yellow-400 p-2">
         <div className="max-w-8xl flex items-center justify-between">
-          <Link to="/dashboard" className="ml-8 text-white text-2xl font-bold">
-            BidsB2C Seller
-          </Link>
-  
+        <Link to="/dashboard" className="ml-8 text-gray-600 text-2xl font-bold">
+        <img src={logo} alt="Logo" className="h-12" /> {/* Use your logo here */}
+      </Link>
           <div className="flex items-center mr-8 mb-1">
             <Dropdown>
               <Dropdown.Toggle variant="outline-light" id="dropdown-basic" style={dropdownStyle}>

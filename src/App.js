@@ -1,21 +1,20 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Home from './components/home/components/Home';
+import SellerLogin from './components/auth/SellerLogin';
+import SellerRegistration from './components/auth/SellerRegistration';
+import ForgotPassword from './components/auth/ForgotPassword';
+import Dashboard from './components/home/Dashboard';
+import Profile from './components/home/components/Profile';
+import UpdatePassword from './components/auth/UpdatePassword';
+import AddProducts from './components/addproducts/AddProductPage';
+import ViewProducts from './components/orders/ViewProductPage';
+import EditProduct from './components/editproducts/EditProductPage';
+import OrderList from './components/orders/OrderList';
+import ReturnRequests from './components/orders/ReturnRequests';
+import ShipmentTracking from './components/orders/ShipmentTracking';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Home from './pages/Home';
-import SellerLogin from './pages/SellerLogin';
-import SellerRegistration from './pages/SellerRegistration';
-import ForgotPassword from './pages/ForgotPassword';
-import Dashboard from './pages/Dashboard';
-import Profile from './pages/Profile';
 import { AuthProvider } from './context/AuthContext';
-import UpdatePassword from './pages/UpdatePassword';
-import AddProducts from './pages/AddProductPage';
-import ViewProducts from './pages/ViewProductPage';
-import EditProduct from './pages/EditProductPage';
-import OrderList from './pages/OrderList';
-import ReturnRequests from './pages/ReturnRequests';
-import ShipmentTracking from './pages/ShipmentTracking';
-// import Main from './components/Add products/Main';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 function App() {
   return (
@@ -29,18 +28,16 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/update-password" element={<UpdatePassword />} />
-          <Route path="/add-product"  element={<AddProducts />} />
+          <Route path="/add-product" element={<AddProducts />} />
           <Route path="/list-product" element={<ViewProducts />} />
           <Route path="/orders" element={<OrderList />} />
           <Route path="/returns" element={<ReturnRequests />} />
           <Route path="/update-status" element={<ShipmentTracking />} />
           <Route path="/edit-product/:productId" element={<EditProduct />} />
-          {/*<Route path="/product" element={<Main />} />*/}
-          {/* Additional routes */}
         </Routes>
       </Router>
-  </AuthProvider>
-    
+    </AuthProvider>
+
   );
 }
 

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { AuthContext } from '../context/AuthContext';
-import Navbar from './Navbar';
+import { AuthContext } from '../../context/AuthContext';
+import Navbar from '../home/components/Navbar';
+import { useNavigate } from 'react-router-dom';
 
 const ProductForm = ({ product, onSave, isEditing }) => {
   const [productData, setProductData] = useState({
@@ -20,7 +21,8 @@ const ProductForm = ({ product, onSave, isEditing }) => {
     return_or_replacement_days: 30,
     active: false,
     product_location_pin_code: '',
-    storeId: ''
+    storeId: '',
+    attributes: [{ name: '', value: '' }]
   });
   const [categories, setCategories] = useState([]);
   const [stores, setStores] = useState([]);
@@ -31,21 +33,29 @@ const ProductForm = ({ product, onSave, isEditing }) => {
   const { user } = useContext(AuthContext);
   const [sellerId, setSellerId] = useState('');
   const [imageUrls, setImageUrls] = useState([]);
+  const [showAddImagesForm, setShowAddImagesForm] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const navigate = useNavigate();
+
+  const extractImageId = url => {
+    const match = url.match(/\/d\/([^/]+)\//);
+    if (match && match[1]) {
+        return `https://drive.google.com/thumbnail?id=${match[1]}`;
+    } else {
+        console.error('Invalid Google Drive image URL:', url);
+        return url; 
+    }
+};
 
   useEffect(() => {
     console.log(user.userId);
     const fetchSellerDetails = async () => {
       try {
-
         const sellerResponse = await axios.get(`http://localhost:8000/sellerdetail/user/${user.userId}`);
         const sellerId = sellerResponse.data.sellerId;
         console.log(sellerId)
         setSellerId(sellerId);
-
-        // If editing, no need to fetch stores again as they are already loaded
-        //if (!isEditing) {
         fetchStores(sellerId);
-        //}
       } catch (error) {
         console.error('Error fetching seller details:', error);
       }
@@ -55,23 +65,19 @@ const ProductForm = ({ product, onSave, isEditing }) => {
       try {
         const response = await axios.get(`http://localhost:8000/stores/${fetchedSellerId}`);
         console.log('Stores response:', response);
-
-        // Check if the response data is an array
         if (Array.isArray(response.data)) {
           setStores(response.data);
         } else if (response.data && typeof response.data === 'object') {
-          // Handle the case when it's a single object by converting it into an array
           setStores([response.data]);
         } else {
           console.error('Unexpected data type received for stores:', response.data);
-          setStores([]); // Set it to an empty array if the response is neither an array nor an object
+          setStores([]);
         }
       } catch (error) {
         console.error('Error fetching stores:', error);
-        setStores([]); // Set to an empty array in case of error
+        setStores([]);
       }
     };
-
 
     axios.get('http://localhost:8000/api/product-categories').then(response => {
       setCategories(response.data);
@@ -89,6 +95,40 @@ const ProductForm = ({ product, onSave, isEditing }) => {
     }
   }, [product, isEditing, user]);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (isEditing) {
+      try {
+        const formData = new FormData();
+        Object.entries(productData).forEach(([key, value]) => {
+          formData.append(`productData[${key}]`, value);
+        });
+        formData.append('categoryData', JSON.stringify({ categoryId: productData.categoryId }));
+        formData.append('sellerData', JSON.stringify({ sellerId: productData.sellerId }));
+        imageURLs.forEach((url, index) => {
+          formData.append(`imagesData[${index}].imageUrl`, url);
+        });
+        videos.forEach((videoUrl, index) => {
+          formData.append(`videosData[${index}]`, videoUrl);
+        });
+        attributes.forEach((attribute, index) => {
+          formData.append(`attributesData[${index}].name`, attribute.name);
+          formData.append(`attributesData[${index}].value`, attribute.value);
+        });
+        await onSave(formData);
+        setShowSuccessPopup(true);
+        setTimeout(() => {
+          setShowSuccessPopup(false);
+          navigate('/list-product');
+        }, 3000); // Set the duration for the pop-up
+      } catch (error) {
+        console.error('Error updating product:', error);
+      }
+    } else {
+      console.error('Invalid product data:', productData);
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setProductData(prevData => ({
@@ -96,9 +136,6 @@ const ProductForm = ({ product, onSave, isEditing }) => {
       [name]: type === 'checkbox' ? checked : value
     }));
   };
-
-  const handleImageChange = (e) => setImages(e.target.files);
-  const handleVideoChange = (e) => setVideos(e.target.files);
 
   const handleAttributesChange = (index, e) => {
     const updatedAttributes = [...attributes];
@@ -109,77 +146,80 @@ const ProductForm = ({ product, onSave, isEditing }) => {
     setAttributes(updatedAttributes);
   };
 
-  const removeAttribute = (index) => {
-    setAttributes(attributes.filter((_, idx) => idx !== index));
+  const removeAttribute = async (attributeId) => {
+    try {
+      console.log('Deleting attribute with ID:', attributeId);
+  
+      // Send a DELETE request to your server endpoint
+      const response = await axios.delete(`http://localhost:8000/api/product-attributes/${attributeId}`);
+      
+      console.log('Delete attribute response:', response);
+  
+      // If the deletion was successful, update the local state
+      setAttributes(attributes.filter((attribute) => attribute.attributeId !== attributeId));
+    } catch (error) {
+      console.error('Error deleting attribute:', error);
+    }
   };
-  // Function to handle adding new attributes
+  
+  
+
   const addNewAttribute = () => {
     setAttributes([...attributes, { name: '', value: '' }]);
   };
 
-
-
-  const addURLField = (type) => {
-    if (type === 'image') {
-      setImageURLs([...imageURLs, '']);
+  const handleRemoveImage = async (imageId) => {
+    const shouldRemove = window.confirm('Are you sure you want to remove this image?');
+    if (shouldRemove) {
+      try {
+        await axios.delete(`http://localhost:8000/product-images/${imageId}`);
+      } catch (error) {
+        console.error('Error deleting image:', error);
+      }
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (isEditing) {
-      try {
-        const formData = new FormData();
+  const handleToggleAddImagesForm = () => {
+    setShowAddImagesForm((prev) => !prev);
+  };
 
-        // Add product data to formData
-        Object.keys(productData).forEach(key => {
-          if (productData[key] !== null && typeof productData[key] === 'object' && !(productData[key] instanceof File)) {
-            // Stringify nested objects, except File objects
-            formData.append(key, JSON.stringify(productData[key]));
-          } else {
-            formData.append(key, productData[key]);
-          }
-        });
+  const addURLField = () => {
+    setImageURLs([...imageURLs, '']);
+  };
 
-        // Add images to formData
-        Array.from(images).forEach((image, index) => {
-          formData.append(`images[${index}]`, image);
-        });
+  const handleImageChange = (index, e) => {
+    const updatedImageURLs = [...imageURLs];
+    updatedImageURLs[index] = e.target.value;
+    
+    // Extract image ID using extractImageId function
+    const imageURL = extractImageId(e.target.value);
+    console.log(imageURL)
+    // Update the state with the extracted image URL
+    setImageURLs(updatedImageURLs);
+    setImageUrls(prevImageUrls => {
+      const newImageUrls = [...prevImageUrls];
+      newImageUrls[index] = imageURL;
+      return newImageUrls;
+    });
+  };
+  
 
-        // Add videos to formData
-        Array.from(videos).forEach((video, index) => {
-          formData.append(`videos[${index}]`, video);
-        });
+  const removeImageURL = (index) => {
+    const updatedImageURLs = [...imageURLs];
+    updatedImageURLs.splice(index, 1);
+    setImageURLs(updatedImageURLs);
+  };
 
-        // Add attributes to formData
-        attributes.forEach((attribute, index) => {
-          formData.append(`attributes[${index}].name`, attribute.name);
-          formData.append(`attributes[${index}].value`, attribute.value);
-        });
-
-        // Add categoryData and sellerData to formData
-        if (productData.categoryData) {
-          formData.append('categoryData', JSON.stringify(productData.categoryData));
-        }
-        if (productData.sellerData) {
-          formData.append('sellerData', JSON.stringify(productData.sellerData));
-        }
-
-        // Log formData keys and values for debugging
-        for (const [key, value] of formData) {
-          console.log(key, value);
-        }
-
-        // Make PUT request
-        await axios.put(`http://localhost:8000/api/products/${product.productId}/complete-details`, formData);
-
-        onSave();
-      } catch (error) {
-        console.error('Error updating product:', error);
-      }
-    } else {
-      console.error('Invalid product data:', productData);
-    }
+  const handleImageUrlChange = (index, e) => {
+    const updatedImages = [...productData.ProductImage];
+    updatedImages[index] = {
+      ...updatedImages[index],
+      imageUrl: e.target.value,
+    };
+    setProductData(prevData => ({
+      ...prevData,
+      ProductImage: updatedImages,
+    }));
   };
 
   return (
@@ -276,17 +316,96 @@ const ProductForm = ({ product, onSave, isEditing }) => {
             <label htmlFor="product_location_pin_code">Product Location Pin Code:</label>
             <input className="form-control" name="product_location_pin_code" id="product_location_pin_code" value={productData.product_location_pin_code} onChange={handleChange} placeholder="Product Location Pin Code" />
           </div>
-
         </div>
 
-        <div className="form-group checkbox-group">
-          <input className="form-check-input" name="apply_bid" id="apply_bid" type="checkbox" checked={productData.apply_bid} onChange={handleChange} />
-          <label htmlFor="apply_bid" className="form-check-label">Apply Bid</label>
+        <div className='flex flex-row space-x-48'>
+          <div className="form-group checkbox-group">
+            <input className="form-check-input" name="apply_bid" id="apply_bid" type="checkbox" checked={productData.apply_bid} onChange={handleChange} />
+            <label htmlFor="apply_bid" className="form-check-label">Apply Bid</label>
+          </div>
+
+          <div className="form-group checkbox-group">
+            <input className="form-check-input" name="active" id="active" type="checkbox" checked={productData.active} onChange={handleChange} />
+            <label htmlFor="active" className="form-check-label">Active</label>
+          </div>
         </div>
 
-        <div className="form-group checkbox-group">
-          <input className="form-check-input" name="active" id="active" type="checkbox" checked={productData.active} onChange={handleChange} />
-          <label htmlFor="active" className="form-check-label">Active</label>
+        <h3>Images:</h3>
+        <div className="">
+          <div className="flex flex-row space-x-4">
+            {product.ProductImage && product.ProductImage.length > 0 && (
+              product.ProductImage.map((image, index) => (
+                <div key={index} className="media-item w-4/5 relative">
+                  <img src={image.imageUrl} alt={`Image ${index}`} className="w-full h-full" />
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={image.imageUrl}
+                    onChange={(e) => handleImageUrlChange(index, e)}
+                    placeholder="Image URL"
+                  />
+                  <button
+                    className="remove-image-button bg-red-500 rounded-lg absolute top-2 right-2 h-8 w-8 text-white"
+                    onClick={() => handleRemoveImage(image.imageId)}
+                  >
+                    x
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
+
+         <div className="form-group">
+          <label className="block text-gray-700 text-sm font-bold mt-4 mb-2">
+            Add Product Images:
+          </label>
+          {!showAddImagesForm ? (
+            <button
+              className="bg-indigo-500 text-white h-10 w-36 rounded"
+              onClick={handleToggleAddImagesForm}
+              type="button"
+            >
+              Add Images
+            </button>
+          ) : (
+            <div className="flex flex-col">
+              {imageURLs.map((url, index) => (
+                <div key={index} className="mb-2 mr-4 flex flex-row">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter image URL"
+                    value={url}
+                    onChange={(e) => handleImageChange(index, e)}
+                  />
+                  <button
+                    className="bg-red-500 text-white h-10 w- rounded ml-2"
+                    onClick={() => removeImageURL(index)}
+                    type='button'
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+              <div className="flex flex-row space-x-2 w-full">
+                <input
+                  type="text"
+                  className="form-control h-10"
+                  placeholder="Enter image URL"
+                  value={''}
+                  onChange={(e) => handleImageChange(imageURLs.length, e)}
+                />
+                <button
+                  className="bg-indigo-500 text-white h-10 w-36 rounded"
+                  onClick={() => addURLField('image')}
+                  type='button'
+                >
+                  Add URLs
+                </button>
+              </div>
+            </div>
+             )}
+          </div>
         </div>
 
         <div className="attributes-section">
@@ -316,50 +435,54 @@ const ProductForm = ({ product, onSave, isEditing }) => {
               </button>
             </div>
           ))}
-          <button className="btn btn-primary" type="button" onClick={addNewAttribute}>
+        </div>
+
+        <div className="attributes-section">
+          <h3 className='text-sm font-bold'>Attributes:</h3>
+          {attributes.map((attribute, index) => (
+            <div key={index} className="attribute-row flex space-x-2">
+              <input
+                className="form-control"
+                name="name"
+                value={attribute.name}
+                onChange={(e) => handleAttributesChange(index, e)}
+                placeholder="Attribute Name"
+              />
+              <input
+                className="form-control"
+                name="value"
+                value={attribute.value}
+                onChange={(e) => handleAttributesChange(index, e)}
+                placeholder="Attribute Value"
+              />
+              <button
+                className="btn btn-danger"
+                type="button"
+                onClick={() => removeAttribute(index)}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+          <button
+            className="btn btn-primary mt-2"
+            type="button"
+            onClick={addNewAttribute}
+          >
             Add Attribute
           </button>
         </div>
 
-        <div className="images-section">
-          <h3>Images:</h3>
-          <div className="media-gallery">
-            {product && product.images && product.images.length > 0 && (
-              product.images.map((image, index) => (
-                <div key={index} className="media-item">
-                  <img src={image.imageUrl} alt={`Image ${index}`} />
-                  {/* You can add additional information or actions related to images here */}
-                </div>
-              ))
-            )}
-            <div className="form-group">
-              <label className="block text-gray-700 text-sm font-bold mb-2">Product Images:</label>
-              {imageURLs.map((url, index) => (
-                <div key={index} className="mb-2">
-                  <input
-                    type="text"
-                    className="form-control w-full"
-                    placeholder="Enter image URL"
-                    value={url}
-                    onChange={(e) => handleImageChange(index, e)}
-                  />
-                </div>
-              ))}
-              <button
-                className="bg-blue-500 text-white px-4 py-2 rounded"
-                onClick={() => addURLField('image')}
-                type='button'
-              >
-                + Add Image URL
-              </button>
-            </div>
-          </div>
 
-
-        </div>
-
-        <button className="btn btn-success" type="submit">Save Product</button>
+        <button className="btn btn-success w-full" type="submit">Save Product</button>
       </form>
+      {showSuccessPopup && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
+          <div className="bg-green-500 text-white p-4 rounded">
+          Product updated successfully!
+        </div>
+        </div>
+      )}
     </div>
   );
 };

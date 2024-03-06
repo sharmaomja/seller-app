@@ -28,9 +28,9 @@ const SellerRegistration = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-blue-100">
-      <div className="bg-white shadow-md rounded-md p-8 max-w-md w-full">
-        <h2 className="text-3xl font-bold mb-6 text-center text-blue-500">Seller Registration</h2>
+    <div className="flex items-center justify-center h-screen bg-gray-300">
+      <div className="bg-gray-100 shadow-md rounded-md p-8 max-w-md w-full">
+        <h2 className="text-3xl font-bold mb-6 text-center text-gray-600">Seller Registration</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex flex-col">
             <label htmlFor="email" className="mb-1 text-gray-700">Email</label>
@@ -41,7 +41,7 @@ const SellerRegistration = () => {
               placeholder="Enter email"
               onChange={handleChange}
               required
-              className="border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+              className="border rounded-md py-2 px-3 focus:outline-none focus:border-teal-500 bg-gray-50"
             />
           </div>
           <div className="flex flex-col">
@@ -53,7 +53,7 @@ const SellerRegistration = () => {
               placeholder="Enter password"
               onChange={handleChange}
               required
-              className="border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+              className="border rounded-md py-2 px-3 focus:outline-none focus:border-teal-500 bg-gray-50"
             />
           </div>
           <div className="flex flex-col">
@@ -64,7 +64,7 @@ const SellerRegistration = () => {
               name="firstName"
               placeholder="First Name"
               onChange={handleChange}
-              className="border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+              className="border rounded-md py-2 px-3 focus:outline-none focus:border-teal-500 bg-gray-50"
             />
           </div>
           <div className="flex flex-col">
@@ -75,7 +75,7 @@ const SellerRegistration = () => {
               name="lastName"
               placeholder="Last Name"
               onChange={handleChange}
-              className="border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+              className="border rounded-md py-2 px-3 focus:outline-none focus:border-teal-500 bg-gray-50"
             />
           </div>
           <div className="flex flex-col">
@@ -88,7 +88,7 @@ const SellerRegistration = () => {
               name="gstn"
               placeholder="GSTN"
               onChange={handleChange}
-              className="border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+              className="border rounded-md py-2 px-3 focus:outline-none focus:border-teal-500 bg-gray-50"
             />
           </div>
 
@@ -100,17 +100,17 @@ const SellerRegistration = () => {
               name="storeName"
               placeholder="Store Name"
               onChange={handleChange}
-              className="border rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+              className="border rounded-md py-2 px-3 focus:outline-none focus:border-teal-500 bg-gray-50"
             />
           </div>
           <button
             type="submit"
-            className="bg-blue-500 text-white w-24 h-10 rounded-md hover:bg-blue-600 focus:outline-none transition duration-300 transform hover:scale-105"
+            className="bg-yellow-400 font-semibold text-black w-36 h-10 rounded-md hover:bg-yellow-500 focus:outline-none transition duration-300 transform hover:scale-105"
           >
             Register
           </button>
           {error && <div className="text-red-500">{error}</div>}
-          <Link to="/seller-login" className="ml-20 text-blue-500 mt-4 hover:underline">Already a seller? Login here</Link>
+          <Link to="/seller-login" className="ml-20 text-yellow-600 mt-4 hover:underline">Already seller? Login</Link>
         </form>
       </div>
     </div>

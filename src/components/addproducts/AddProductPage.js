@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { AuthContext } from '../context/AuthContext';
-import Navbar from '../components/Navbar';
-
+import { AuthContext } from '../../context/AuthContext';
+import Navbar from '../home/components/Navbar';
+import { useNavigate } from 'react-router-dom';
 const AddProductForm = ({ productId, onSave }) => {
   const [productData, setProductData] = useState({
     name: '',
@@ -34,6 +34,8 @@ const AddProductForm = ({ productId, onSave }) => {
   const [storeData, setStoreData] = useState([]);
   const [imageURLs, setImageURLs] = useState(['']);
   const [videoURLs, setVideoURLs] = useState(['']);
+  const [showPopup, setShowPopup] = useState(false); 
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchSellerDetails = async () => {
@@ -85,7 +87,6 @@ const AddProductForm = ({ productId, onSave }) => {
     }));
   };
 
-
   const handleImageChange = (index, e) => {
     e.preventDefault()
     const newURLs = [...imageURLs];
@@ -99,14 +100,13 @@ const AddProductForm = ({ productId, onSave }) => {
     setVideoURLs(newURLs);
   };
 
- const addURLField = (type) => {
-  if (type === 'image') {
-    setImageURLs([...imageURLs, '']);
-  } else if (type === 'video') {
-    setVideoURLs([...videoURLs, '']);
-  }
-};
-
+  const addURLField = (type) => {
+    if (type === 'image') {
+      setImageURLs([...imageURLs, '']);
+    } else if (type === 'video') {
+      setVideoURLs([...videoURLs, '']);
+    }
+  };
 
   const handleAttributesChange = (index, e) => {
     const updatedAttributes = attributes.map((attr, idx) => idx === index ? { ...attr, [e.target.name]: e.target.value } : attr);
@@ -128,12 +128,12 @@ const AddProductForm = ({ productId, onSave }) => {
       const productDetails = { ...productData };
       const imagesData = imageURLs.map(url => ({ imageUrl: url.trim(), altText: '' }));
       const videosData = videoURLs.filter(url => url.trim() !== '');
-      
+
       const attributesData = attributes.map(attr => ({
         name: attr.name.trim(),
         value: attr.value.trim()
       }));
-  
+
       const requestData = {
         productDetails: {
           ...productDetails,
@@ -141,31 +141,43 @@ const AddProductForm = ({ productId, onSave }) => {
         },
         imagesData,
         videosData,
-        attributesData, 
+        attributesData,
       };
-  
+
       const response = await axios.post('http://localhost:8000/api/products/complete-details', requestData, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
-  
+
       console.log(response.data);
-  
+
       if (response.data.productId) {
-        // Handle success if needed
+        // Show pop-up for 1 second
+        setShowPopup(true);
+        setTimeout(() => {
+          setShowPopup(false);
+          // Redirect to '/list-product' after 1 second
+          navigate('/list-product');
+        }, 1000);
       }
+
     } catch (error) {
       console.error('Error saving product:', error);
     }
-  };  
+  };
 
   return (
 
     <div>
       <Navbar />
       <form className="max-w-8xl mt-2 mx-auto p-8 bg-white shadow-md rounded-lg" onSubmit={handleSubmit}>
+      <div className="flex">
+      <div className="w-1/2 pr-4">
         <div className="form-group">
+          <label htmlFor="productName" className="block text-sm font-medium text-gray-700">
+            Select a Category:
+          </label>
           <select className="form-control" name="categoryId" value={productData.categoryId} onChange={handleChange}>
             <option value="">Select a Category</option>
             {categories.map(category => (
@@ -175,8 +187,13 @@ const AddProductForm = ({ productId, onSave }) => {
             ))}
           </select>
         </div>
-
-        <div className='form-group'>
+      </div>
+    
+      <div className="w-1/2">
+        <div className="form-group">
+          <label htmlFor="store" className="block text-sm font-medium text-gray-700">
+            Select a Store:
+          </label>
           {storeData.length > 0 && (
             <select
               id="store"
@@ -193,46 +210,77 @@ const AddProductForm = ({ productId, onSave }) => {
               ))}
             </select>
           )}
-
         </div>
+      </div>
+    </div>
+    
 
         <div className="flex mb-0">
           <div className="w-1/2 pr-4">
             <div className="form-group">
-              <input className="form-control" name="name" value={productData.name} onChange={handleChange} placeholder="Product Name"  />
+              <label htmlFor="productName" className="block text-sm font-medium text-gray-700">
+                Product Name:
+              </label>
+              <input
+                required
+                id="productName"
+                className="form-control"
+                name="name"
+                value={productData.name}
+                onChange={handleChange}
+                placeholder="Product Name"
+              />
             </div>
           </div>
 
           <div className="w-1/2">
             <div className="form-group">
-              <input className="form-control" name="header" value={productData.header} onChange={handleChange} placeholder="Product Header"  />
+              <label htmlFor="productHeader" className="block text-sm font-medium text-gray-700">
+                Product Header:
+              </label>
+              <input
+                required
+                id="productHeader"
+                className="form-control"
+                name="header"
+                value={productData.header}
+                onChange={handleChange}
+                placeholder="Product Header"
+              />
             </div>
           </div>
         </div>
 
+
         <div className="flex mb-0">
           <div className="w-1/2 pr-4">
             <div className="form-group">
+              <label htmlFor="shortDescription" className="block text-sm font-medium text-gray-700">
+                Short Description:
+              </label>
               <textarea
+                id="shortDescription"
                 className="form-control h-20"
                 name="short_description"
                 value={productData.short_description}
                 onChange={handleChange}
                 placeholder="Short Description"
-                
               ></textarea>
             </div>
           </div>
 
           <div className="w-1/2">
             <div className="form-group">
+              <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                Description:
+              </label>
               <textarea
+                id="description"
                 className="form-control h-20"
                 name="description"
                 value={productData.description}
                 onChange={handleChange}
                 placeholder="Description"
-                
               ></textarea>
             </div>
           </div>
@@ -241,13 +289,37 @@ const AddProductForm = ({ productId, onSave }) => {
         <div className="flex mb-0">
           <div className="w-1/2 pr-4">
             <div className="form-group">
-              <input className="form-control" name="min_price"  type="number" value={productData.min_price} onChange={handleChange} placeholder="Minimum Price" />
+              <label htmlFor="minPrice" className="block text-sm font-medium text-gray-700">
+                Minimum Price:
+              </label>
+              <input
+                required
+                id="minPrice"
+                className="form-control"
+                name="min_price"
+                type="number"
+                value={productData.min_price}
+                onChange={handleChange}
+                placeholder="Minimum Price"
+              />
             </div>
           </div>
 
           <div className="w-1/2">
             <div className="form-group">
-              <input className="form-control" name="discounted_price"  type="number" value={productData.discounted_price} onChange={handleChange} placeholder="Discounted Price" />
+              <label htmlFor="discountedPrice" className="block text-sm font-medium text-gray-700">
+                Discounted Price:
+              </label>
+              <input
+                required
+                id="discountedPrice"
+                className="form-control"
+                name="discounted_price"
+                type="number"
+                value={productData.discounted_price}
+                onChange={handleChange}
+                placeholder="Discounted Price"
+              />
             </div>
           </div>
         </div>
@@ -255,40 +327,72 @@ const AddProductForm = ({ productId, onSave }) => {
         <div className='flex mb-0'>
           <div className="w-1/2 pr-4">
             <div className="form-group">
-              <input className="form-control" name="gst_percentage"  type="number" value={productData.gst_percentage} onChange={handleChange} placeholder="GST Percentage" />
+              <label htmlFor="gstPercentage" className="block text-sm font-medium text-gray-700">
+                GST Percentage:
+              </label>
+              <input
+                required
+                id="gstPercentage"
+                className="form-control"
+                name="gst_percentage"
+                type="number"
+                value={productData.gst_percentage}
+                onChange={handleChange}
+                placeholder="GST Percentage"
+              />
             </div>
           </div>
 
           <div className="w-1/2">
             <div className="form-group">
-              <input className="form-control" name="max_price" type="number"  value={productData.max_price} onChange={handleChange} placeholder="Maximum Price" />
+              <label htmlFor="maxPrice" className="block text-sm font-medium text-gray-700">
+                Maximum Price:
+              </label>
+              <input
+                required
+                id="maxPrice"
+                className="form-control"
+                name="max_price"
+                type="number"
+                value={productData.max_price}
+                onChange={handleChange}
+                placeholder="Maximum Price"
+              />
             </div>
           </div>
         </div>
 
+
         <div className="flex">
           <div className="w-1/2 pr-4">
             <div className="form-group">
+              <label htmlFor="returnOrReplacementDays" className="block text-sm font-medium text-gray-700">
+                Return or Replacement Days:
+              </label>
               <input
+                required
+                id="returnOrReplacementDays"
                 className="form-control"
                 name="return_or_replacement_days"
                 type="number"
                 value={productData.return_or_replacement_days}
                 onChange={handleChange}
                 placeholder="Return or Replacement Days"
-                
               />
             </div>
           </div>
 
           <div className="w-1/2 mt-2">
             <div className="form-group">
+              <label htmlFor="returnOrReplacement" className="block text-sm font-medium text-gray-700">
+                Return or Replacement:
+              </label>
               <select
+                id="returnOrReplacement"
                 className="form-control"
                 name="return_or_replacement"
                 value={productData.return_or_replacement}
                 onChange={handleChange}
-                
               >
                 <option value="return">Return</option>
                 <option value="replacement">Replacement</option>
@@ -300,20 +404,35 @@ const AddProductForm = ({ productId, onSave }) => {
         <div className="flex">
           <div className='w-1/2 pr-4'>
             <div className="form-group">
-              <input className="form-control" name="product_location_pin_code" value={productData.product_location_pin_code} onChange={handleChange} placeholder="Product Location Pin Code" />
+              <label htmlFor="productLocationPinCode" className="block text-sm font-medium text-gray-700">
+                Product Location Pin Code:
+              </label>
+              <input
+                required
+                id="productLocationPinCode"
+                className="form-control"
+                name="product_location_pin_code"
+                value={productData.product_location_pin_code}
+                onChange={handleChange}
+                placeholder="Product Location Pin Code"
+              />
             </div>
           </div>
 
           <div className="w-1/2">
             <div className="form-group">
+              <label htmlFor="stockQuantity" className="block text-sm font-medium text-gray-700">
+                Stock Quantity:
+              </label>
               <input
+                required
+                id="stockQuantity"
                 className="form-control"
                 name="stockQuantity"
                 type="number"
                 value={productData.stockQuantity}
                 onChange={handleChange}
                 placeholder="Stock Quantity"
-                
               />
             </div>
           </div>
@@ -363,6 +482,7 @@ const AddProductForm = ({ productId, onSave }) => {
               {imageURLs.map((url, index) => (
                 <div key={index} className="mb-2">
                   <input
+                    required
                     type="text"
                     className="form-control"
                     placeholder="Enter image URL"
@@ -372,7 +492,7 @@ const AddProductForm = ({ productId, onSave }) => {
                 </div>
               ))}
               <button
-                className="bg-blue-500 text-white px-4 py-2 rounded"
+                className="bg-indigo-500 text-white px-4 py-2 rounded"
                 onClick={() => addURLField('image')}
                 type='button'
               >
@@ -395,7 +515,7 @@ const AddProductForm = ({ productId, onSave }) => {
                 </div>
               ))}
               <button
-                className="bg-blue-500 text-white px-4 py-2 rounded"
+                className="bg-indigo-500 text-white px-4 py-2 rounded"
                 onClick={() => addURLField('video')}
                 type='button'
               >
@@ -405,10 +525,16 @@ const AddProductForm = ({ productId, onSave }) => {
           </div>
         </div>
 
+
+        <label htmlFor="stockQuantity" className="block text-sm font-medium text-gray-700">
+          Add Product Attributes:
+        </label>
         <div className="attributes-section flex items-center flex-wrap">
+
           {attributes.map((attribute, index) => (
             <div className="attribute-row flex items-center space-x-4" key={index}>
               <input
+                required
                 style={{ width: "810px" }}
                 className="border border-gray-700 p-2"
                 name="name"
@@ -417,6 +543,7 @@ const AddProductForm = ({ productId, onSave }) => {
                 placeholder="Attribute Name"
               />
               <input
+                required
                 style={{ width: "810px" }}
                 className="border border-gray-700 p-2"
                 name="value"
@@ -444,10 +571,17 @@ const AddProductForm = ({ productId, onSave }) => {
           </button>
         </div>
 
-        <button className="submit-btn w-full bg-blue-800 text-white px-4 py-2 rounded mt-2" type="submit">
+        <button className="submit-btn w-full bg-yellow-500 font-bold text-black px-4 py-2 rounded mt-2" type="submit">
           Save Product
         </button>
       </form>
+      {showPopup && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
+          <div className="bg-green-500 text-white p-4 rounded">
+            Product saved successfully!
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import Navbar from '../components/Navbar';
-import { AuthContext } from '../context/AuthContext';
+import Navbar from './Navbar';
+import { AuthContext } from '../../../context/AuthContext';
 
 const Profile = () => {
   const { user } = useContext(AuthContext);
@@ -254,19 +254,26 @@ const Profile = () => {
   const fetchUserData = async (userId) => {
     try {
       const config = {
-        headers: {
-        },
+        headers: {},
       };
       const response = await axios.get(`http://localhost:8000/users/${user.userId}`, config);
       const userData = response.data;
+
+      // Set the received user data in the state
+      setProfileData(userData);
 
       // Log the received user data for debugging
       console.log('Received User Data:', userData);
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
-  }
+  };
 
+  useEffect(() => {
+    if (user && user.userId) {
+      fetchUserData(user.userId);
+    }
+  }, [user]);
 
 
   return (
@@ -274,22 +281,37 @@ const Profile = () => {
       <Navbar />
       <div className="profile-container mx-auto max-w-8xl p-8">
         <h1 className="text-3xl font-bold mb-4">Your Profile</h1>
-        <div className="mb-4 p-4 shadow-lg">
-          <img
-            src="placeholder_image_url"
-            className="rounded-full w-24 h-24 object-cover"
-          />
-        </div>
 
         {/* Seller Details Section */}
-        <div className="bg-white rounded-lg p-6 shadow-md mb-8">
-          <h2 className="text-xl font-semibold mb-4">Seller Details</h2>
-          <p className="text-gray-700 text-lg mb-2">Email:{`${user.email}`}</p>
-          <p className="text-gray-700 text-lg mb-2">Name:{`${user.firstName} ${user.lastName}`}</p>
-          <p className="text-gray-700 text-lg mb-2">Phone: {profileData.phone}</p>
-          <p className="text-gray-700 text-lg mb-2">Address: {profileData.address}</p>
+        <div className="bg-white rounded-lg shadow-md mb-8">
+  <div className="p-6">
+    <h2 className="text-2xl font-semibold mb-4">Seller Details</h2>
+    <div className="grid grid-cols-2 gap-y-4">
+      <div>
+        <p className="text-gray-700 text-lg font-bold mb-2">Email:</p>
+        <p className="text-gray-900 text-lg font-semibold">{profileData.email}</p>
+      </div>
+      <div>
+        <p className="text-gray-700 text-lg font-bold mb-2">Name:</p>
+        <p className="text-gray-900 text-lg font-bold">{`${user.firstName} ${user.lastName}`}</p>
+      </div>
+      {profileData.phone && ( // Check if phone number is available
+        <div>
+          <p className="text-gray-700 text-lg  mb-2">Phone:</p>
+          <p className="text-gray-900 text-lg">{profileData.phone}</p>
         </div>
+      )}
+      {profileData.address && ( // Check if address is available
+        <div>
+          <p className="text-gray-700 text-lg mb-2">Address:</p>
+          <p className="text-gray-900 text-lg">{profileData.address}</p>
+        </div>
+      )}
+    </div>
+  </div>
+</div>
 
+      
         {/* Seller Store Section */}
         <div className="flex flex-col md:flex-row bg-white rounded-lg p-6 shadow-lg mb-8">
           {/* Left Sidebar: List of Stores */}
@@ -324,7 +346,7 @@ const Profile = () => {
               ))}
             </ul>
           ) : (
-            <p className="md:w-1/2">No Address available.</p>
+            <p className="md:w-1/2">No Store available.</p>
           )}
 
           {/* Right Section: Form for adding/updating store */}
@@ -727,3 +749,11 @@ const Profile = () => {
 };
 
 export default Profile;
+
+
+// <div className="mb-4 p-4 shadow-lg">
+//           <img
+//             src="placeholder_image_url"
+//             className="rounded-full w-24 h-24 object-cover"
+//           />
+//         </div>

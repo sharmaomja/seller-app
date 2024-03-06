@@ -1,5 +1,5 @@
 .product-form {
-    max-width: 1400px;
+    max-width: 1800px;
     margin: 0 auto;
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -42,8 +42,8 @@
   }
   
   .media-item img, .media-item video {
-    width: 100px;
-    height: 100px;
+    width: 300px;
+    height: 300px;
     object-fit: cover;
   }
   
