@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/seller-app/static/css/main.38795edb.css",
-    "main.js": "/seller-app/static/js/main.b4a5a42b.js",
+    "main.css": "/seller-app/static/css/main.ccadd1fe.css",
+    "main.js": "/seller-app/static/js/main.c86e13ce.js",
     "static/media/logo2.png": "/seller-app/static/media/logo2.a9c6fb85a9efffcc6de6.png",
     "index.html": "/seller-app/index.html",
-    "main.38795edb.css.map": "/seller-app/static/css/main.38795edb.css.map",
-    "main.b4a5a42b.js.map": "/seller-app/static/js/main.b4a5a42b.js.map"
+    "main.ccadd1fe.css.map": "/seller-app/static/css/main.ccadd1fe.css.map",
+    "main.c86e13ce.js.map": "/seller-app/static/js/main.c86e13ce.js.map"
   },
   "entrypoints": [
-    "static/css/main.38795edb.css",
-    "static/js/main.b4a5a42b.js"
+    "static/css/main.ccadd1fe.css",
+    "static/js/main.c86e13ce.js"
   ]
 }
