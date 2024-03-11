@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { AuthContext } from '../../context/AuthContext'; 
+import { AuthContext } from '../../context/AuthContext';
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage] = useState(10); 
+  const [productsPerPage] = useState(10);
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
@@ -34,18 +34,18 @@ const ProductList = () => {
   const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
 
   // Search logic
-  const filteredProducts = currentProducts.filter(product => 
-    product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+  const filteredProducts = currentProducts.filter(product =>
+    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
     <div className="product-list">
       <h1>Product List</h1>
-      <input 
-        type="text" 
-        placeholder="Search products..." 
-        onChange={(e) => setSearchQuery(e.target.value)} 
+      <input
+        type="text"
+        placeholder="Search products..."
+        onChange={(e) => setSearchQuery(e.target.value)}
       />
 
       {filteredProducts.map(product => (
@@ -59,6 +59,8 @@ const ProductList = () => {
             <Link to={`/product/edit/${product.productId}`} className="btn edit-btn">Edit</Link>
             <button onClick={() => handleDelete(product.productId)} className="btn delete-btn">Delete</button>
             <Link to={`/product/${product.productId}`} className="btn view-btn">View Details</Link>
+            <Link to={`/product/${product.productId}`} className="btn view-btn">Apply Bid ↗</Link>
+
           </div>
         </div>
       ))}

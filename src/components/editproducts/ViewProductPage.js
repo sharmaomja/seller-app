@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import ConfirmationModal from '../ConfirmationModal';
 import Navbar from '../home/components/Navbar';
-
+import ApplyAuctionForm from '../auctionproduct/applyauctionform';
 
 const ViewProducts = () => {
   const [products, setProducts] = useState([]);
@@ -13,9 +13,9 @@ const ViewProducts = () => {
   const [productsPerPage] = useState(10); // Change as needed
   const { user } = useContext(AuthContext);
   const [selectedProductId, setSelectedProductId] = useState(null);
+  const [isAuctionFormOpen, setIsAuctionFormOpen] = useState(false); // State to manage the visibility of Auctionding form
+  const [selectedProductIdForAuction, setSelectedProductIdForAuction] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -69,6 +69,16 @@ const ViewProducts = () => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+  const openAuctionForm = (productId) => {
+    setSelectedProductIdForAuction(productId);
+    setIsAuctionFormOpen(true);
+  };
+
+  const closeAuctionForm = () => {
+    setIsAuctionFormOpen(false);
+  };
+
 
   // Pagination
   const indexOfLastProduct = currentPage * productsPerPage;
@@ -130,18 +140,26 @@ const ViewProducts = () => {
                   <td className="py-2 px-3">{product.stockQuantity}</td>
                   <td className="py-2 px-3">{product.ProductCategory?.name}</td>
                   <td className="py-2 px-3">
-                    <button
-                      onClick={() => handleEditClick(product.productId)}
-                      className="bg-gray-500 text-white font-semibold py-2 px-4 rounded-md mr-2"
+                    <div classname="">
+                      <button
+                        onClick={() => handleEditClick(product.productId)}
+                        className="bg-yellow-100 text-black font-semibold py-1 px-2 rounded-md mr-2"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => openModal(product.productId)}
+                        className="bg-yellow-200 text-black font-semibold py-1 px-2 rounded-md mr-2"
+                      >
+                        Delete
+                      </button>
+                      <button
+                      className="bg-yellow-300 text-black font-semibold py-1 px-2 rounded-md"
+                      onClick={() => openAuctionForm(product.productId)} // Pass the product ID
                     >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => openModal(product.productId)}
-                      className="bg-pink-500 text-white font-semibold py-2 px-4 rounded-md"
-                    >
-                      Delete
-                    </button>   
+                      Apply Auction
+                    </button>                    
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -166,6 +184,16 @@ const ViewProducts = () => {
           message="Are you sure you want to delete this product?"
         />
       </div>
+      {isAuctionFormOpen && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-90">
+          <div className="bg-gray-50 p-10 rounded shadow">
+            <button onClick={closeAuctionForm} className="absolute top-2 right-2 text-gray-600">
+              Close
+            </button>
+            <ApplyAuctionForm productId={selectedProductIdForAuction} />
+          </div>
+        </div>
+      )}
     </div>
 
   );

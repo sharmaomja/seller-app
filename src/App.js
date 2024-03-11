@@ -7,7 +7,7 @@ import Dashboard from './components/home/Dashboard';
 import Profile from './components/home/components/Profile';
 import UpdatePassword from './components/auth/UpdatePassword';
 import AddProducts from './components/addproducts/AddProductPage';
-import ViewProducts from './components/orders/ViewProductPage';
+import ViewProducts from './components/editproducts/ViewProductPage';
 import EditProduct from './components/editproducts/EditProductPage';
 import OrderList from './components/orders/OrderList';
 import ReturnRequests from './components/orders/ReturnRequests';
