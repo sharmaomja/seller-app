@@ -34,7 +34,7 @@ const AddProductForm = ({ productId, onSave }) => {
   const [storeData, setStoreData] = useState([]);
   const [imageURLs, setImageURLs] = useState(['']);
   const [videoURLs, setVideoURLs] = useState(['']);
-  const [showPopup, setShowPopup] = useState(false); 
+  const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -171,49 +171,49 @@ const AddProductForm = ({ productId, onSave }) => {
 
     <div>
       <Navbar />
-      <form className="max-w-8xl mt-2 mx-auto p-8 bg-white shadow-md rounded-lg" onSubmit={handleSubmit}>
-      <div className="flex">
-      <div className="w-1/2 pr-4">
-        <div className="form-group">
-          <label htmlFor="productName" className="block text-sm font-medium text-gray-700">
-            Select a Category:
-          </label>
-          <select className="form-control" name="categoryId" value={productData.categoryId} onChange={handleChange}>
-            <option value="">Select a Category</option>
-            {categories.map(category => (
-              <option key={category.categoryId} value={category.categoryId}>
-                {category.name}
-              </option>
-            ))}
-          </select>
+      <form className="mt-2 mx-auto p-8 bg-gray-100 shadow-lg rounded-lg" style={{ width: "80%" }} onSubmit={handleSubmit}>
+        <div className="flex">
+          <div className="w-1/2 pr-4">
+            <div className="form-group">
+              <label htmlFor="productName" className="block text-sm font-medium text-gray-700">
+                Select a Category:
+              </label>
+              <select className="form-control shadow-sm py-1" name="categoryId" value={productData.categoryId} onChange={handleChange}>
+                <option value="">Select a Category</option>
+                {categories.map(category => (
+                  <option key={category.categoryId} value={category.categoryId}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="w-1/2">
+            <div className="form-group">
+              <label htmlFor="store" className="block text-sm font-medium text-gray-700">
+                Select a Store:
+              </label>
+              {storeData.length > 0 && (
+                <select
+                  id="store"
+                  className="form-control shadow-sm py-1"
+                  name="storeId"
+                  value={productData.storeId}
+                  onChange={handleChange}
+                >
+                  <option value="">Select a Store</option>
+                  {storeData.map(store => (
+                    <option key={store.storeId} value={store.storeId}>
+                      {store.storeName}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
+          </div>
         </div>
-      </div>
-    
-      <div className="w-1/2">
-        <div className="form-group">
-          <label htmlFor="store" className="block text-sm font-medium text-gray-700">
-            Select a Store:
-          </label>
-          {storeData.length > 0 && (
-            <select
-              id="store"
-              className="form-control"
-              name="storeId"
-              value={productData.storeId}
-              onChange={handleChange}
-            >
-              <option value="">Select a Store</option>
-              {storeData.map(store => (
-                <option key={store.storeId} value={store.storeId}>
-                  {store.storeName}
-                </option>
-              ))}
-            </select>
-          )}
-        </div>
-      </div>
-    </div>
-    
+
 
         <div className="flex mb-0">
           <div className="w-1/2 pr-4">
@@ -224,7 +224,7 @@ const AddProductForm = ({ productId, onSave }) => {
               <input
                 required
                 id="productName"
-                className="form-control"
+                className="form-control shadow-sm py-1"
                 name="name"
                 value={productData.name}
                 onChange={handleChange}
@@ -241,7 +241,7 @@ const AddProductForm = ({ productId, onSave }) => {
               <input
                 required
                 id="productHeader"
-                className="form-control"
+                className="form-control shadow-sm py-1"
                 name="header"
                 value={productData.header}
                 onChange={handleChange}
@@ -260,7 +260,7 @@ const AddProductForm = ({ productId, onSave }) => {
               </label>
               <textarea
                 id="shortDescription"
-                className="form-control h-20"
+                className="form-control shadow-sm py-1 h-20"
                 name="short_description"
                 value={productData.short_description}
                 onChange={handleChange}
@@ -276,7 +276,7 @@ const AddProductForm = ({ productId, onSave }) => {
               </label>
               <textarea
                 id="description"
-                className="form-control h-20"
+                className="form-control shadow-sm py-1 h-20"
                 name="description"
                 value={productData.description}
                 onChange={handleChange}
@@ -287,7 +287,7 @@ const AddProductForm = ({ productId, onSave }) => {
         </div>
 
         <div className="flex mb-0">
-          <div className="w-1/2 pr-4">
+          <div className="w-1/4 pr-4">
             <div className="form-group">
               <label htmlFor="minPrice" className="block text-sm font-medium text-gray-700">
                 Minimum Price:
@@ -295,7 +295,7 @@ const AddProductForm = ({ productId, onSave }) => {
               <input
                 required
                 id="minPrice"
-                className="form-control"
+                className="form-control shadow-sm py-1"
                 name="min_price"
                 type="number"
                 value={productData.min_price}
@@ -304,8 +304,7 @@ const AddProductForm = ({ productId, onSave }) => {
               />
             </div>
           </div>
-
-          <div className="w-1/2">
+          <div className="w-1/4 pr-4">
             <div className="form-group">
               <label htmlFor="discountedPrice" className="block text-sm font-medium text-gray-700">
                 Discounted Price:
@@ -313,7 +312,7 @@ const AddProductForm = ({ productId, onSave }) => {
               <input
                 required
                 id="discountedPrice"
-                className="form-control"
+                className="form-control shadow-sm py-1"
                 name="discounted_price"
                 type="number"
                 value={productData.discounted_price}
@@ -322,10 +321,7 @@ const AddProductForm = ({ productId, onSave }) => {
               />
             </div>
           </div>
-        </div>
-
-        <div className='flex mb-0'>
-          <div className="w-1/2 pr-4">
+          <div className="w-1/4 pr-4">
             <div className="form-group">
               <label htmlFor="gstPercentage" className="block text-sm font-medium text-gray-700">
                 GST Percentage:
@@ -333,7 +329,7 @@ const AddProductForm = ({ productId, onSave }) => {
               <input
                 required
                 id="gstPercentage"
-                className="form-control"
+                className="form-control shadow-sm py-1"
                 name="gst_percentage"
                 type="number"
                 value={productData.gst_percentage}
@@ -342,8 +338,7 @@ const AddProductForm = ({ productId, onSave }) => {
               />
             </div>
           </div>
-
-          <div className="w-1/2">
+          <div className="w-1/4">
             <div className="form-group">
               <label htmlFor="maxPrice" className="block text-sm font-medium text-gray-700">
                 Maximum Price:
@@ -351,7 +346,7 @@ const AddProductForm = ({ productId, onSave }) => {
               <input
                 required
                 id="maxPrice"
-                className="form-control"
+                className="form-control shadow-sm py-1"
                 name="max_price"
                 type="number"
                 value={productData.max_price}
@@ -362,7 +357,6 @@ const AddProductForm = ({ productId, onSave }) => {
           </div>
         </div>
 
-
         <div className="flex">
           <div className="w-1/2 pr-4">
             <div className="form-group">
@@ -372,7 +366,7 @@ const AddProductForm = ({ productId, onSave }) => {
               <input
                 required
                 id="returnOrReplacementDays"
-                className="form-control"
+                className="form-control shadow-sm py-1"
                 name="return_or_replacement_days"
                 type="number"
                 value={productData.return_or_replacement_days}
@@ -389,7 +383,7 @@ const AddProductForm = ({ productId, onSave }) => {
               </label>
               <select
                 id="returnOrReplacement"
-                className="form-control"
+                className="form-control shadow-sm py-1"
                 name="return_or_replacement"
                 value={productData.return_or_replacement}
                 onChange={handleChange}
@@ -410,7 +404,7 @@ const AddProductForm = ({ productId, onSave }) => {
               <input
                 required
                 id="productLocationPinCode"
-                className="form-control"
+                className="form-control shadow-sm py-1"
                 name="product_location_pin_code"
                 value={productData.product_location_pin_code}
                 onChange={handleChange}
@@ -427,7 +421,7 @@ const AddProductForm = ({ productId, onSave }) => {
               <input
                 required
                 id="stockQuantity"
-                className="form-control"
+                className="form-control shadow-sm py-1"
                 name="stockQuantity"
                 type="number"
                 value={productData.stockQuantity}
@@ -439,43 +433,6 @@ const AddProductForm = ({ productId, onSave }) => {
         </div>
 
         <div className='flex'>
-          <div className="w-1/2 pr-4">
-            <div className="form-group">
-              <div className="border border-gray-800 p-1 mt-2 rounded-lg">
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    name="active"
-                    type="checkbox"
-                    checked={productData.active}
-                    onChange={handleChange}
-                    className="ml-4 form-checkbox transform scale-150 text-indigo-500"
-                  />
-                  <span className="text-l text-gray-700">Active</span>
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <div className="w-1/2 pr-4">
-            <div className="form-group">
-              <div className="border border-gray-800 p-1 mt-2 rounded-lg">
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    name="apply_bid"
-                    type="checkbox"
-                    checked={productData.apply_bid}
-                    onChange={handleChange}
-                    className="ml-4 form-checkbox transform scale-150 text-indigo-500"
-                  />
-                  <span className="text-l text-gray-700">Apply Bid</span>
-                </label>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        <div className='flex'>
           <div className='w-1/2 pr-4'>
             <div className="form-group">
               <label className="block text-gray-700 text-sm font-bold mb-2">Product Images:</label>
@@ -484,7 +441,7 @@ const AddProductForm = ({ productId, onSave }) => {
                   <input
                     required
                     type="text"
-                    className="form-control"
+                    className="form-control shadow-sm py-1"
                     placeholder="Enter image URL"
                     value={url}
                     onChange={(e) => handleImageChange(index, e)}
@@ -492,11 +449,11 @@ const AddProductForm = ({ productId, onSave }) => {
                 </div>
               ))}
               <button
-                className="bg-indigo-500 text-white px-4 py-2 rounded"
+                className="bg-gray-400 text-black w-full h-8 rounded"
                 onClick={() => addURLField('image')}
                 type='button'
               >
-                + Add Image URL
+                + ADD IMAGE URLs
               </button>
             </div>
           </div>
@@ -507,7 +464,7 @@ const AddProductForm = ({ productId, onSave }) => {
                 <div key={index} className="mb-2">
                   <input
                     type="text"
-                    className="form-control"
+                    className="form-control shadow-sm py-1"
                     placeholder="Enter video URL"
                     value={url}
                     onChange={(e) => handleVideoChange(index, e)}
@@ -515,11 +472,11 @@ const AddProductForm = ({ productId, onSave }) => {
                 </div>
               ))}
               <button
-                className="bg-indigo-500 text-white px-4 py-2 rounded"
+                className="bg-gray-400 text-black w-full h-8 rounded"
                 onClick={() => addURLField('video')}
                 type='button'
               >
-                + Add Video URL
+                + ADD VIDEO URLs
               </button>
             </div>
           </div>
@@ -535,8 +492,8 @@ const AddProductForm = ({ productId, onSave }) => {
             <div className="attribute-row flex items-center space-x-4" key={index}>
               <input
                 required
-                style={{ width: "810px" }}
-                className="border border-gray-700 p-2"
+                style={{ width: "640px" }}
+                className="border border-gray-700 p-1 shadow-sm"
                 name="name"
                 value={attribute.name}
                 onChange={(e) => handleAttributesChange(index, e)}
@@ -544,8 +501,8 @@ const AddProductForm = ({ productId, onSave }) => {
               />
               <input
                 required
-                style={{ width: "810px" }}
-                className="border border-gray-700 p-2"
+                style={{ width: "640px" }}
+                className="border border-gray-700 p-1"
                 name="value"
                 value={attribute.value}
                 onChange={(e) => handleAttributesChange(index, e)}
@@ -553,7 +510,7 @@ const AddProductForm = ({ productId, onSave }) => {
               />
               {attributes.length > 1 && (
                 <button
-                  className="remove-attribute-btn text-5xl font-bold text-white px-2 py-2 rounded-full"
+                  className="remove-attribute-btn text-3xl font-bold text-white px-1 py-1 rounded-full"
                   onClick={() => removeAttribute(index)}
                   type='button'
                 >
@@ -563,7 +520,7 @@ const AddProductForm = ({ productId, onSave }) => {
             </div>
           ))}
           <button
-            className="ml-4 add-attribute-btn bg-green-500 text-2xl font-bold text-white px-2 py-2 rounded-full"
+            className="ml-4 add-attribute-btn bg-green-500 text-lg font-bold text-white px-1 py-1 rounded-full"
             onClick={addAttribute}
             type='button'
           >
@@ -571,7 +528,7 @@ const AddProductForm = ({ productId, onSave }) => {
           </button>
         </div>
 
-        <button className="submit-btn w-full bg-yellow-500 font-bold text-black px-4 py-2 rounded mt-2" type="submit">
+        <button className="submit-btn w-full bg-yellow-400 font-semibold text-black px-4 py-2 rounded mt-4" type="submit">
           Save Product
         </button>
       </form>
@@ -588,3 +545,41 @@ const AddProductForm = ({ productId, onSave }) => {
 
 export default AddProductForm;
 
+
+
+// <div className='flex'>
+// <div className="w-1/2 pr-4">
+//   <div className="form-group">
+//     <div className="border border-gray-800 p-1 mt-2 rounded-lg">
+//       <label className="flex items-center space-x-2 cursor-pointer">
+//         <input
+//           name="active"
+//           type="checkbox"
+//           checked={productData.active}
+//           onChange={handleChange}
+//           className="ml-4 form-checkbox transform scale-150 text-indigo-500"
+//         />
+//         <span className="text-l text-gray-700">Active</span>
+//       </label>
+//     </div>
+//   </div>
+// </div>
+
+// <div className="w-1/2 pr-4">
+//   <div className="form-group">
+//     <div className="border border-gray-800 p-1 mt-2 rounded-lg">
+//       <label className="flex items-center space-x-2 cursor-pointer">
+//         <input
+//           name="apply_bid"
+//           type="checkbox"
+//           checked={productData.apply_bid}
+//           onChange={handleChange}
+//           className="ml-4 form-checkbox transform scale-150 text-indigo-500"
+//         />
+//         <span className="text-l text-gray-700">Apply Bid</span>
+//       </label>
+//     </div>
+//   </div>
+// </div>
+
+// </div>
