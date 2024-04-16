@@ -3,44 +3,24 @@ import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import Navbar from '../home/components/Navbar';
 import { useNavigate } from 'react-router-dom';
-const AddProductForm = ({ productId, onSave }) => {
-  const [productData, setProductData] = useState({
-    name: '',
-    header: '',
-    short_description: '',
-    description: '',
-    min_price: '',
-    discounted_price: '',
-    gst_percentage: '',
-    max_price: '',
-    apply_bid: false,
-    stockQuantity: 0,
-    categoryId: '',
-    storeId: '',
-    seller_id: '',
-    return_or_replacement: 'return',
-    return_or_replacement_days: 30,
-    active: false,
-    product_location_pin_code: '',
-  });
-  const [categories, setCategories] = useState([]);
-  const [stores, setStores] = useState([]);
-  const [images, setImages] = useState([]);
-  const [attributes, setAttributes] = useState([{ name: '', value: '' }]);
+
+const AddProductForm = ({ productId }) => {
+  const navigate = useNavigate()
   const { user } = useContext(AuthContext);
+  const [attributes, setAttributes] = useState([{ name: '', value: '' }]);
+  const [productData, setProductData] = useState({ name: '', header: '', short_description: '', description: '', min_price: '', discounted_price: '', gst_percentage: '', max_price: '', apply_bid: false, stockQuantity: 10, categoryId: '', storeId: '', seller_id: '', return_or_replacement: 'return', return_or_replacement_days: 7, active: false, product_location_pin_code: '' });
   const [sellerId, setSellerId] = useState([]);
-  const [productImages, setProductImages] = useState([]);
-  const [videos, setVideos] = useState([]);
   const [storeData, setStoreData] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [imageURLs, setImageURLs] = useState(['']);
   const [videoURLs, setVideoURLs] = useState(['']);
   const [showPopup, setShowPopup] = useState(false);
-  const navigate = useNavigate()
+  const apiBaseURL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     const fetchSellerDetails = async () => {
       try {
-        const sellerResponse = await axios.get(`http://localhost:8000/sellerdetail/user/${user.userId}`);
+        const sellerResponse = await axios.get(`${apiBaseURL}/sellerdetail/user/${user.userId}`);
         const sellerId = sellerResponse.data.sellerId;
         setSellerId(sellerId);
         setProductData(prevData => ({
@@ -55,7 +35,7 @@ const AddProductForm = ({ productId, onSave }) => {
 
     const fetchStoreData = async (sellerId) => {
       try {
-        const storeResponse = await axios.get(`http://localhost:8000/stores/${sellerId}`);
+        const storeResponse = await axios.get(`${apiBaseURL}/stores/${sellerId}`);
         setStoreData(storeResponse.data);
         console.log(storeResponse.data);
       } catch (error) {
@@ -63,9 +43,9 @@ const AddProductForm = ({ productId, onSave }) => {
       }
     };
 
-    axios.get('http://localhost:8000/api/product-categories').then(response => setCategories(response.data));
+    axios.get(`${apiBaseURL}/api/product-categories`).then(response => setCategories(response.data));
     if (productId) {
-      axios.get(`http://localhost:8000/api/products/${productId}`).then(response => setProductData(response.data));
+      axios.get(`${apiBaseURL}/api/products/${productId}`).then(response => setProductData(response.data));
     } else if (user && user.userId) {
       fetchSellerDetails();
     }
@@ -144,7 +124,7 @@ const AddProductForm = ({ productId, onSave }) => {
         attributesData,
       };
 
-      const response = await axios.post('http://localhost:8000/api/products/complete-details', requestData, {
+      const response = await axios.post(`${apiBaseURL}/api/products/complete-details`, requestData, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -171,7 +151,7 @@ const AddProductForm = ({ productId, onSave }) => {
 
     <div>
       <Navbar />
-      <form className="mt-2 mx-auto p-8 bg-gray-100 shadow-lg rounded-lg" style={{ width: "80%" }} onSubmit={handleSubmit}>
+      <form className="mt-8 mx-auto p-4 bg-gray-100 shadow-lg rounded-lg" style={{ width: "80%" }} onSubmit={handleSubmit}>
         <div className="flex">
           <div className="w-1/2 pr-4">
             <div className="form-group">
@@ -449,7 +429,7 @@ const AddProductForm = ({ productId, onSave }) => {
                 </div>
               ))}
               <button
-                className="bg-gray-400 text-black w-full h-8 rounded"
+                className="bg-gray-400 text-black w-48 h-8 rounded"
                 onClick={() => addURLField('image')}
                 type='button'
               >
@@ -472,7 +452,7 @@ const AddProductForm = ({ productId, onSave }) => {
                 </div>
               ))}
               <button
-                className="bg-gray-400 text-black w-full h-8 rounded"
+                className="bg-gray-400 text-black w-48 h-8 rounded"
                 onClick={() => addURLField('video')}
                 type='button'
               >
@@ -528,7 +508,7 @@ const AddProductForm = ({ productId, onSave }) => {
           </button>
         </div>
 
-        <button className="submit-btn w-full bg-yellow-400 font-semibold text-black px-4 py-2 rounded mt-4" type="submit">
+        <button className="submit-btn w-full bg-yellow-400 font-semibold text-black px-4 py-1 rounded mt-4" type="submit">
           Save Product
         </button>
       </form>

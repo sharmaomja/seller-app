@@ -36,6 +36,8 @@ const ProductForm = ({ product, onSave, isEditing }) => {
   const [showAddImagesForm, setShowAddImagesForm] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const navigate = useNavigate();
+  const apiBaseURL = process.env.REACT_APP_API_URL;
+
 
   const extractImageId = url => {
     const match = url.match(/\/d\/([^/]+)\//);
@@ -51,7 +53,7 @@ const ProductForm = ({ product, onSave, isEditing }) => {
     console.log(user.userId);
     const fetchSellerDetails = async () => {
       try {
-        const sellerResponse = await axios.get(`http://localhost:8000/sellerdetail/user/${user.userId}`);
+        const sellerResponse = await axios.get(`${apiBaseURL}/sellerdetail/user/${user.userId}`);
         const sellerId = sellerResponse.data.sellerId;
         console.log(sellerId)
         setSellerId(sellerId);
@@ -63,7 +65,7 @@ const ProductForm = ({ product, onSave, isEditing }) => {
 
     const fetchStores = async (fetchedSellerId) => {
       try {
-        const response = await axios.get(`http://localhost:8000/stores/${fetchedSellerId}`);
+        const response = await axios.get(`${apiBaseURL}/stores/${fetchedSellerId}`);
         console.log('Stores response:', response);
         if (Array.isArray(response.data)) {
           setStores(response.data);
@@ -79,7 +81,7 @@ const ProductForm = ({ product, onSave, isEditing }) => {
       }
     };
 
-    axios.get('http://localhost:8000/api/product-categories').then(response => {
+    axios.get(`${apiBaseURL}/api/product-categories`).then(response => {
       setCategories(response.data);
     });
 
@@ -151,7 +153,7 @@ const ProductForm = ({ product, onSave, isEditing }) => {
       console.log('Deleting attribute with ID:', attributeId);
   
       // Send a DELETE request to your server endpoint
-      const response = await axios.delete(`http://localhost:8000/api/product-attributes/${attributeId}`);
+      const response = await axios.delete(`${apiBaseURL}/api/product-attributes/${attributeId}`);
       
       console.log('Delete attribute response:', response);
   
@@ -172,7 +174,7 @@ const ProductForm = ({ product, onSave, isEditing }) => {
     const shouldRemove = window.confirm('Are you sure you want to remove this image?');
     if (shouldRemove) {
       try {
-        await axios.delete(`http://localhost:8000/product-images/${imageId}`);
+        await axios.delete(`${apiBaseURL}/product-images/${imageId}`);
       } catch (error) {
         console.error('Error deleting image:', error);
       }

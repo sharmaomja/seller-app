@@ -12,6 +12,8 @@ const SellerRegistration = () => {
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const apiBaseURL = process.env.REACT_APP_API_URL;
+
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,7 +22,7 @@ const SellerRegistration = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8000/users/register', formData);
+      await axios.post(`${apiBaseURL}/users/register/`, formData);
       navigate('/seller-login');
     } catch (error) {
       setError(error.response?.data?.error || 'An error occurred');

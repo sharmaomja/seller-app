@@ -16,11 +16,12 @@ const Profile = () => {
     storeName: '',
     storeDescription: '',
   });
+  const apiBaseURL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     const fetchSellerDetails = async () => {
       try {
-        const sellerResponse = await axios.get(`http://localhost:8000/sellerdetail/user/${user.userId}`);
+        const sellerResponse = await axios.get(`${apiBaseURL}/sellerdetail/user/${user.userId}`);
         const sellerId = sellerResponse.data.sellerId;
         setSellerId(sellerId);
         fetchStoreData(sellerId);
@@ -32,7 +33,7 @@ const Profile = () => {
 
     const fetchStoreData = async (sellerId) => {
       try {
-        const storeResponse = await axios.get(`http://localhost:8000/stores/${sellerId}`);
+        const storeResponse = await axios.get(`${apiBaseURL}/stores/${sellerId}`);
         setStoreData(storeResponse.data);
         console.log(storeResponse.data);
       } catch (error) {
@@ -49,12 +50,12 @@ const Profile = () => {
         ...storeFormData,
       });
 
-      await axios.post('http://localhost:8000/stores', {
+      await axios.post(`${apiBaseURL}/stores`, {
         sellerId: sellerId,
         ...storeFormData,
       });
 
-      const response = await axios.get(`http://localhost:8000/stores/${sellerId}`);
+      const response = await axios.get(`${apiBaseURL}/stores/${sellerId}`);
       setStoreData(response.data);
 
       setStoreFormData({
@@ -68,8 +69,8 @@ const Profile = () => {
 
   const handleUpdateStore = async (storeId) => {
     try {
-      await axios.put(`http://localhost:8000/stores/${sellerId}/${storeId}`, storeFormData);
-      const response = await axios.get(`http://localhost:8000/stores/${sellerId}`);
+      await axios.put(`${apiBaseURL}/stores/${sellerId}/${storeId}`, storeFormData);
+      const response = await axios.get(`${apiBaseURL}/stores/${sellerId}`);
       setStoreData(response.data);
 
       setStoreFormData({
@@ -83,8 +84,8 @@ const Profile = () => {
 
   const handleDeleteStore = async (storeId) => {
     try {
-      await axios.delete(`http://localhost:8000/stores/${sellerId}/${storeId}`);
-      const response = await axios.get(`http://localhost:8000/stores/${sellerId}`);
+      await axios.delete(`${apiBaseURL}/stores/${sellerId}/${storeId}`);
+      const response = await axios.get(`${apiBaseURL}/stores/${sellerId}`);
       setStoreData(response.data);
     } catch (error) {
       console.error('Error deleting store', error);
@@ -94,7 +95,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchSellerDetails = async () => {
       try {
-        const sellerResponse = await axios.get(`http://localhost:8000/sellerdetail/user/${user.userId}`);
+        const sellerResponse = await axios.get(`${apiBaseURL}/sellerdetail/user/${user.userId}`);
         const sellerId = sellerResponse.data.sellerId;
         setSellerId(sellerId);
         fetchBankDetails(sellerId);
@@ -106,7 +107,7 @@ const Profile = () => {
 
     const fetchBankDetails = async (sellerId) => {
       try {
-        const bankDetailsResponse = await axios.get(`http://localhost:8000/seller/bank-details/${sellerId}`);
+        const bankDetailsResponse = await axios.get(`${apiBaseURL}/seller/bank-details/${sellerId}`);
         setBankDetails(bankDetailsResponse.data);
         console.log(bankDetailsResponse.data)
       } catch (error) {
@@ -122,11 +123,11 @@ const Profile = () => {
         sellerId: sellerId,
         ...formData,
       });
-      await axios.post('http://localhost:8000/seller/bank-details', {
+      await axios.post(`${apiBaseURL}/seller/bank-details`, {
         sellerId: sellerId,
         ...formData,
       });
-      const response = await axios.get(`http://localhost:8000/seller/bank-details/${sellerId}`);
+      const response = await axios.get(`${apiBaseURL}/seller/bank-details/${sellerId}`);
       console.log('Response data:', response.data);
       setBankDetails(response.data.bankDetails);
       setFormData({
@@ -144,10 +145,10 @@ const Profile = () => {
 
   const handleUpdateBankDetails = async (bankDetailId) => {
     try {
-      await axios.put(`http://localhost:8000/seller/bank-details/${bankDetailId}`, formData);
+      await axios.put(`${apiBaseURL}/seller/bank-details/${bankDetailId}`, formData);
 
       // Refresh bank details after updating
-      const response = await axios.get(`http://localhost:8000/seller/bank-details/${sellerId}`);
+      const response = await axios.get(`${apiBaseURL}/seller/bank-details/${sellerId}`);
       setBankDetails(response.data.bankDetails);
 
       // Clear the form data
@@ -165,10 +166,10 @@ const Profile = () => {
 
   const handleDeleteBankDetails = async (bankDetailId) => {
     try {
-      await axios.delete(`http://localhost:8000/seller/bank-details/${bankDetailId}`);
+      await axios.delete(`${apiBaseURL}/seller/bank-details/${bankDetailId}`);
 
       // Refresh bank details after deleting
-      const response = await axios.get(`http://localhost:8000/seller/bank-details/${sellerId}`);
+      const response = await axios.get(`${apiBaseURL}/seller/bank-details/${sellerId}`);
       setBankDetails(response.data.bankDetails);
     } catch (error) {
       console.error('Error deleting bank details', error);
@@ -178,7 +179,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchAddressData = async () => {
       try {
-        const addressResponse = await axios.get(`http://localhost:8000/users/${user.userId}/addresses`);
+        const addressResponse = await axios.get(`${apiBaseURL}/users/${user.userId}/addresses`);
         setAddressData(addressResponse.data);
         console.log(addressResponse.data)
       } catch (error) {
@@ -196,12 +197,12 @@ const Profile = () => {
         ...addressFormData,
       });
 
-      await axios.post('http://localhost:8000/users/address', {
+      await axios.post(`${apiBaseURL}/users/address`, {
         userId: user.userId,
         ...addressFormData
       });
 
-      const response = await axios.get(`http://localhost:8000/users/${user.userId}/addresses`);
+      const response = await axios.get(`${apiBaseURL}/users/${user.userId}/addresses`);
       setAddressData(response.data);
       setAddressFormData({
         addressLine1: '', addressLine2: '', city: '', state: '', postalCode: '', country: '', phone: '', addressType: '', set_default: false,
@@ -213,9 +214,9 @@ const Profile = () => {
 
   const handleUpdateAddress = async (addressId) => {
     try {
-      await axios.put(`http://localhost:8000/users/addresses/${addressId}`, addressFormData);
+      await axios.put(`${apiBaseURL}/users/addresses/${addressId}`, addressFormData);
 
-      const response = await axios.get(`http://localhost:8000/users/${user.userId}/addresses`);
+      const response = await axios.get(`${apiBaseURL}/users/${user.userId}/addresses`);
       setAddressData(response.data);
 
       setAddressFormData({
@@ -236,9 +237,9 @@ const Profile = () => {
 
   const handleDeleteAddress = async (addressId) => {
     try {
-      await axios.delete(`http://localhost:8000/users/addresses/${addressId}`);
+      await axios.delete(`${apiBaseURL}/users/addresses/${addressId}`);
 
-      const response = await axios.get(`http://localhost:8000/users/${user.userId}/addresses`);
+      const response = await axios.get(`${apiBaseURL}/users/${user.userId}/addresses`);
       setAddressData(response.data);
     } catch (error) {
       console.error('Error deleting address', error);
@@ -256,7 +257,7 @@ const Profile = () => {
       const config = {
         headers: {},
       };
-      const response = await axios.get(`http://localhost:8000/users/${user.userId}`, config);
+      const response = await axios.get(`${apiBaseURL}/users/${user.userId}`, config);
       const userData = response.data;
 
       // Set the received user data in the state

@@ -11,10 +11,12 @@ const OrderList = ({ sellerId, storeId }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [ordersPerPage] = useState(5);
+  const apiBaseURL = process.env.REACT_APP_API_URL;
+
 
   const fetchOrders = async (sellerId) => {
     try {
-      const response = await axios.get(`http://localhost:8000/api/orders/seller/${sellerId}`);
+      const response = await axios.get(` {sellerId}`);
       const initialStatuses = response.data.reduce((acc, order) => {
         acc[order.orderId] = order.orderStatus;
         return acc;
@@ -27,24 +29,25 @@ const OrderList = ({ sellerId, storeId }) => {
     }
   };
 
-  const updateOrderStatus = async (orderId) => {
+  const updateOrderStatus = async (orderId, newStatus) => {
     try {
-      await axios.put(`http://localhost:8000/api/orders_update/${orderId}`, {
-        orderStatus: orderStatuses[orderId],
+      await axios.put(`${apiBaseURL}/api/orders_update/${orderId}`, {
+        orderStatus: newStatus,
         userId: user.userId,
         userType: 'seller',
       });
-      // Fetch orders again after updating status
-      fetchOrders(sellerId);
+      // Update orderStatuses state with the new status
+      setOrderStatuses({ ...orderStatuses, [orderId]: newStatus });
     } catch (error) {
       console.error('Error updating order status:', error);
     }
   };
+  
 
   useEffect(() => {
     const fetchSellerDetails = async () => {
       try {
-        const sellerResponse = await axios.get(`http://localhost:8000/sellerdetail/user/${user.userId}`);
+        const sellerResponse = await axios.get(`${apiBaseURL}/sellerdetail/user/${user.userId}`);
         const sellerId = sellerResponse.data.sellerId;
         fetchOrders(sellerId);
       } catch (error) {
@@ -126,13 +129,12 @@ const OrderList = ({ sellerId, storeId }) => {
                       <td className="py-2 px-4">₹{orderItem.Product.max_price}</td>
                       <td className="py-2 px-4">{order.orderStatus}</td>
                       <td className="py-2 px-4">
-                        <select
-                          className="bg-gray-200 mr-2 px-3 py-1 rounded"
-                          value={orderStatuses[order.orderId] || ''}
-                          onChange={(e) =>
-                            setOrderStatuses({ ...orderStatuses, [order.orderId]: e.target.value })
-                          }
-                        >
+                      <select
+                      className="bg-gray-200 mr-2 px-3 py-1 rounded"
+                      value={orderStatuses[order.orderId] || ''}
+                      onChange={(e) => updateOrderStatus(order.orderId, e.target.value)}
+                    >
+                    
                           <option value="">Select Status</option>
                           <option value="confirmed">Confirmed</option>
                           <option value="shipped">Shipped</option>

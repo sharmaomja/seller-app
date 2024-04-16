@@ -9,6 +9,8 @@ const SellerLogin = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
+  const apiBaseURL = process.env.REACT_APP_API_URL;
+  console.log(apiBaseURL)
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -17,7 +19,7 @@ const SellerLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8000/users/sellerLogin', formData);
+      const response = await axios.post(`${apiBaseURL}/users/sellerLogin`, formData);
       const userData = {
         userId: response.data.userId,
         userType: response.data.userType,

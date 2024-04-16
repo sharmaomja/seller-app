@@ -5,11 +5,12 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const apiBaseURL = process.env.REACT_APP_API_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8000/users/forget-password', { email });
+      const response = await axios.post(`${apiBaseURL}/users/forget-password`, { email });
       setMessage('Check your email to reset your password.');
       setError('');
     } catch (error) {

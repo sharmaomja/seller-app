@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 
-const CreateAuctionForm = ({ productId, onClose }) => {
+const CreateAuctionForm = ({ productId, onClose = () => { } }) => {
   const { user } = useContext(AuthContext);
   const [sellerId, setSellerId] = useState('');
   const [formData, setFormData] = useState({
@@ -14,11 +14,14 @@ const CreateAuctionForm = ({ productId, onClose }) => {
     reservePrice: '',
     status: 'active', // Assuming 'created' is the default status
   });
+  const apiBaseURL = process.env.REACT_APP_API_URL;
+  
+
 
   useEffect(() => {
     const fetchSellerDetails = async () => {
       try {
-        const sellerResponse = await axios.get(`http://localhost:8000/sellerdetail/user/${user.userId}`);
+        const sellerResponse = await axios.get(`${apiBaseURL}/sellerdetail/user/${user.userId}`);
         const fetchedSellerId = sellerResponse.data.sellerId;
         setSellerId(fetchedSellerId);
         setFormData({ ...formData, sellerId: fetchedSellerId });
@@ -33,6 +36,7 @@ const CreateAuctionForm = ({ productId, onClose }) => {
   }, [user.userId]);
 
   const [error, setError] = useState('');
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,13 +46,16 @@ const CreateAuctionForm = ({ productId, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8000/api/auctions', formData);
+      const response = await axios.post(`${apiBaseURL}/api/auctions`, formData);
       console.log('Auction created:', response.data);
-      // Optionally, you can redirect the user or show a success message here
-      onClose();
+      setShowSuccessMessage(true);
+      setTimeout(() => {
+        setShowSuccessMessage(false);
+        onClose();
+      }, 1000); // Close after 1 second
     } catch (error) {
       console.error('Error creating auction:', error);
-      setError('An error occurred. Please try again.');
+      setError(error.response?.data?.message || 'An error occurred. Please try again.');
     }
   };
 
@@ -56,7 +63,13 @@ const CreateAuctionForm = ({ productId, onClose }) => {
     <div>
       <h2 className="text-2xl font-semibold mb-4">Create Auction</h2>
       {error && <div className="text-red-500">{error}</div>}
-
+      {showSuccessMessage && (
+        <div className="fixed inset-0 flex items-center justify-center">
+          <div className="bg-green-500 text-white p-4 rounded-lg">
+            Bid created successfully.
+          </div>
+        </div>
+      )}  
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex space-x-4">
           <div className="w-1/2">
@@ -91,6 +104,7 @@ const CreateAuctionForm = ({ productId, onClose }) => {
         </div>
 
         <button type="submit" className="bg-yellow-400 text-gray-800 w-full h-10 font-semibold rounded-md hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Create Auction</button>
+
       </form>
     </div>
   );

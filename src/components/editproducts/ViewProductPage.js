@@ -17,12 +17,13 @@ const ViewProducts = () => {
   const [selectedProductIdForAuction, setSelectedProductIdForAuction] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+  const apiBaseURL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     const fetchSellerDetails = async () => {
       if (user && user.userId) {
         try {
-          const sellerResponse = await axios.get(`http://localhost:8000/sellerdetail/user/${user.userId}`);
+          const sellerResponse = await axios.get(`${apiBaseURL}/sellerdetail/user/${user.userId}`);
           const sellerId = sellerResponse.data.sellerId;
           fetchProducts(sellerId);
         } catch (error) {
@@ -33,7 +34,7 @@ const ViewProducts = () => {
 
     const fetchProducts = async (sellerId) => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/products/seller/${sellerId}`);
+        const response = await axios.get(`${apiBaseURL}/api/products/seller/${sellerId}`);
         setProducts(response.data);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -53,7 +54,7 @@ const ViewProducts = () => {
 
   const handleDeleteClick = async () => {
     try {
-      await axios.delete(`http://localhost:8000/api/products/${selectedProductId}/complete-details`);
+      await axios.delete(`${apiBaseURL}/api/products/${selectedProductId}/complete-details`);
       setProducts(products.filter(product => product.productId !== selectedProductId));
       setIsModalOpen(false); // Close the modal
     } catch (error) {

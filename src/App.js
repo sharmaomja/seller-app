@@ -21,6 +21,7 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
+          <Route path="/" exact element={<Home />} />
           <Route path="/seller-app" exact element={<Home />} />
           <Route path="/seller-register" element={<SellerRegistration />} />
           <Route path="/seller-login" element={<SellerLogin />} />

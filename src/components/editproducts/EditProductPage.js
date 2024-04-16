@@ -7,9 +7,10 @@ import './EditProduct.css';
 const EditProduct = () => {
   const [product, setProduct] = useState(null);
   const { productId } = useParams(); // Get productId from route parameters
+  const apiBaseURL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
-    axios.get(`http://localhost:8000/api/products/complete-details/${productId}`)
+    axios.get(`${apiBaseURL}/api/products/complete-details/${productId}`)
       .then(response => {
         const receivedProduct = response.data;
         console.log('Received Product Data:', receivedProduct);
@@ -22,7 +23,7 @@ const EditProduct = () => {
 
     console.log(formData);
     try {
-      await axios.put(`http://localhost:8000/api/products/${productId}/complete-details`, formData, {
+      await axios.put(`${apiBaseURL}/api/products/${productId}/complete-details`, formData, {
         headers: {
           'Content-Type': 'application/json'
         }

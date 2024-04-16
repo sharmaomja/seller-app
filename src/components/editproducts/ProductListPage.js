@@ -9,17 +9,18 @@ const ProductList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(10);
   const { user } = useContext(AuthContext);
+  const apiBaseURL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     if (user && user.userId) {
-      axios.get(`http://localhost:8000/api/products/seller/${user.userId}`) // Adjust the endpoint as per your API
+      axios.get(`${apiBaseURL}/api/products/seller/${user.userId}`) // Adjust the endpoint as per your API
         .then(response => setProducts(response.data))
         .catch(error => console.error('Error fetching products:', error));
     }
   }, [user]);
 
   const handleDelete = (productId) => {
-    axios.delete(`http://localhost:8000/api/products/${productId}`)
+    axios.delete(`${apiBaseURL}/api/products/${productId}`)
       .then(() => {
         setProducts(products.filter(product => product.productId !== productId));
       })

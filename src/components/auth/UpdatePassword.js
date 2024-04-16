@@ -11,6 +11,8 @@ const UpdatePassword = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
+  const apiBaseURL = process.env.REACT_APP_API_URL;
+
 
   // Extract email from the state
   const email = location.state?.email;
@@ -33,7 +35,7 @@ const UpdatePassword = () => {
     }
 
     try {
-      await axios.put('http://localhost:8000/api/users/update-password-by-email', {
+      await axios.put(`${apiBaseURL}/api/users/update-password-by-email`, {
         email: email,
         oldPassword: formData.oldPassword,
         newPassword: formData.newPassword,
